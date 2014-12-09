@@ -4,7 +4,7 @@ Donate link: http://palasthotel.de/
 Tags: landingpage, editor, admin, page, containerist
 Requires at least: 3.6
 Tested up to: 3.6
-Stable tag: 1.0
+Stable tag: 1.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl
 
@@ -35,7 +35,7 @@ What is Grid?
 
 * Single Posts of any kind as Teasers
 
-Reuseable Boxes
+### Reuseable Boxes
 
 * All Boxes may be reused across several Landingpages
 
@@ -49,6 +49,10 @@ Easy extendable with new boxes. Have a look at doc.the-grid.ws (english is comin
 1. Build landing pages at `Landing Pages`, `Switch into the Grid` and on next screen `save changes`
 
 == Frequently Asked Questions ==
+
+= Table already exists error when I want to activate Grid. Why? = 
+
+This happens if grid was installed previously and could not be uninstalled correctly. You have to delete in the wp_options the option_name „grid“. Than try again to active Grid plugin.
 
 = How do I use Grid landingpages? =
 
@@ -65,6 +69,10 @@ You can create your own plugin and use the `grid_load_classes` action to add new
 2. Grid editor with Box list
 
 == Changelog ==
+
+= 1.1 =
+* Installation issues
+* Post type registration fixes on activate
 
 = 1.0 =
 * First release
