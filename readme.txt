@@ -35,7 +35,7 @@ What is Grid?
 
 * Single Posts of any kind as Teasers
 
-Reuseable Boxes
+### Reuseable Boxes
 
 * All Boxes may be reused across several Landingpages
 
