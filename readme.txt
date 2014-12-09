@@ -4,6 +4,7 @@ Donate link: http://palasthotel.de/
 Tags: landingpage, editor, admin, page, containerist
 Requires at least: 3.6
 Tested up to: 3.6
+Stable tag: 1.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl
 
@@ -19,28 +20,28 @@ What is Grid?
 
 ## Types of Boxes
 
-Static Boxes
+### Static Boxes
+
 * Free-HTML-Box
 * Medialibrary-Box
 * Video-Box
 
-List-Boxes
+### List-Boxes
+
 * Ordered and filtered Lists of Contents
 * Number of Items as well as criteria for sorting and filtering are configurable
 
-Content-Boxes
+### Content-Boxes
+
 * Single Posts of any kind as Teasers
 
 Reuseable Boxes
+
 * All Boxes may be reused across several Landingpages
 
 Easy extendable with new boxes. Have a look at doc.the-grid.ws (english is coming soon).
 
 == Installation ==
-
-This section describes how to install the plugin and get it working.
-
-e.g.
 
 1. Upload `grid-wordpress.zip` to the `/wp-content/plugins/` directory
 1. Extract the Plugin to a `grid` Folder
@@ -59,7 +60,9 @@ You can create your own plugin and use the `grid_load_classes` action to add new
 
 == Screenshots ==
 
+1. Grid editor with Container list
 
+2. Grid editor with Box list
 
 == Changelog ==
 
