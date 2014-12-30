@@ -1,0 +1,9 @@
+#grid{
+	direction: ltr;
+}
+#grid *{
+	direction: rtl;
+}
+#box-editor{
+	direction: rtl;
+}

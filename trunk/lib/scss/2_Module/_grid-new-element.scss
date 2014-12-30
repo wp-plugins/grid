@@ -1,0 +1,29 @@
+
+// new Element -> container or box
+// Design thats the same for both types belongs here
+.grid-new-element {
+	cursor: move;
+	position: relative;
+
+	padding-left: 20px;
+	
+	margin-bottom: 8px;
+	color: $color-draggable-border;
+	
+
+	.grid-element-title {
+		color: $color-text;
+		padding-left: 20px;
+		margin: 0px;
+		padding-top: 10px; 
+		&.grid-reusable-container-title{
+			padding-left: 0px;
+			padding-top: 0px;
+		}
+	}
+
+	&:hover {
+		color: $color-draggable-border-hover;
+		border-color: $color-draggable-border-hover;
+	}
+}
