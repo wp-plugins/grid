@@ -1,5 +1,5 @@
 === Grid ===
-Contributors: edwardbock
+Contributors: edwardbock,mkernel
 Donate link: http://palasthotel.de/
 Tags: landingpage, editor, admin, page, containerist
 Requires at least: 3.6
