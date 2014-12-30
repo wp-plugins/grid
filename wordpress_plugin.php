@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Grid
  * Description: Helps layouting pages with containerist.
- * Version: 1.1
+ * Version: 1.2
  * Author: Palasthotel
  * Author URI: http://www.palasthotel.de
  * Requires at least: 3.6
