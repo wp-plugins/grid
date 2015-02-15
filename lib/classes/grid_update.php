@@ -6,8 +6,21 @@
  * @package Palasthotel\Grid
  */
 
-class grid_update
+if(!function_exists("grid_query"))
 {
+	function grid_query($querystring)
+	{
+		return db_query($querystring);
+	}
+}
+
+class base_update
+{
+	/**
+	 * shema key for update shema identification
+	 */
+	public $schemakey = "";
+
 	public function performUpdates()
 	{
 		$current_schema=$this->getCurrentSchemaVersion();
@@ -55,14 +68,14 @@ class grid_update
 	{
 		//we assume that all updates have been applied during installation, so we're searching for the highest one and save that.
 		$schema=$this->getNeededSchemaVersion();
-		db_query("update {grid_schema} set value=".$schema." where propkey='schema_version'");
+		db_query("update {grid_schema} set value=".$schema." where propkey='schema_version".$this->schemakey."'");
 	}
 	
 	public function getCurrentSchemaVersion()
 	{
 		try
 		{
-			$result=db_query("select value from {grid_schema} where propkey='schema_version'",false);
+			$result=grid_query("select value from {grid_schema} where propkey='schema_version".$this->schemakey."'");
 			foreach($result as $entry)
 			{
 				return $entry->value;
@@ -73,7 +86,22 @@ class grid_update
 			return 0;
 		}
 	}
-	
+
+	public function install(){
+		db_query("insert into {grid_schema} (propkey) values ('schema_version') ON DUPLICATE KEY UPDATE propkey = 'schema_version';");
+		$this->markAsUpdated();
+	}
+
+}
+
+class grid_update extends base_update
+{
+	/**
+	 * shema key for update shema identification 
+	 * Grid lib
+	 */
+	public $schemakey = "";
+
 	public function update_1()
 	{
 		db_query("create table if not exists {grid_schema} (propkey varchar(255),value varchar(255), PRIMARY KEY (`propkey`) );");
@@ -155,5 +183,10 @@ class grid_update
 					" WHERE type = 'I-0';");
 
 	}
-
+	
+	public function update_3() {
+		db_query("alter table {grid_grid2container} drop foreign key fk_grid_container");
+		db_query("alter table {grid_grid2container} add constraint {fk_grid_container} foreign key (container_id,grid_id,grid_revision) references {grid_container} (id, grid_id, grid_revision) on update cascade on delete cascade");
+	}
+	
 }

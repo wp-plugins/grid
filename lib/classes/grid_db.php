@@ -7,7 +7,8 @@
  */
 
 class grid_db {
-	public $templatesPath=NULL;
+	public $templatesPaths= NULL;
+	public $templatesPath = NULL;
 	public $ajaxEndpoint;
 	public $containerstyle=NULL;
 	public $slotstyle=NULL;
@@ -32,6 +33,7 @@ class grid_db {
 		$this->author=$author;
 		$this->ajaxEndpoint=new grid_ajaxendpoint();
 		$this->prefix=$prefix;
+		$this->templatesPaths = array();
 	}
 	
 	public function __destruct() {
@@ -170,18 +172,24 @@ class grid_db {
 	{
 		$boxtype=$row['box_type'];
 		$class="grid_".$boxtype."_box";
-		$box=new $class();
-		$box->storage=$this;
-		$box->boxid=$row['box_id'];
-		$box->style=$row['box_style'];
-		$box->style_label=$row['box_style_label'];
-		$box->title=$row['box_title'];
-		$box->titleurl=$row['box_titleurl'];
-		$box->prolog=$row['box_prolog'];
-		$box->epilog=$row['box_epilog'];
-		$box->readmore=$row['box_readmore'];
-		$box->readmoreurl=$row['box_readmoreurl'];
-		$box->content=json_decode($row['box_content']);
+		if(!class_exists($class))
+		{
+			$box = new grid_error_box("class not found ".$class);
+			$box->storage=$this;
+		} else {
+			$box=new $class();
+			$box->storage=$this;
+			$box->boxid=$row['box_id'];
+			$box->style=$row['box_style'];
+			$box->style_label=$row['box_style_label'];
+			$box->title=$row['box_title'];
+			$box->titleurl=$row['box_titleurl'];
+			$box->prolog=$row['box_prolog'];
+			$box->epilog=$row['box_epilog'];
+			$box->readmore=$row['box_readmore'];
+			$box->readmoreurl=$row['box_readmoreurl'];
+			$box->content=json_decode($row['box_content']);
+		}		
 		return $box;
 	}
 	
