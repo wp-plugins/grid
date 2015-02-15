@@ -23,7 +23,7 @@ class grid_media_box extends grid_static_base_box {
 		$this->content->url = '';
 		$this->content->fileinfo = ' ';
 	}
-	
+
 	/**
 	* Sets box type
 	*
@@ -41,29 +41,37 @@ class grid_media_box extends grid_static_base_box {
 	* @return mixed
 	*/
 	public function build( $editmode ) {
+		$this->content->image_tag = '';
+		$this->content->image_url = '';
+		$this->content->image_mega_file = '';
 		if ( isset( $this->content->fileid->id ) && $this->content->fileid->id != '' ) {
+			$this->content->image_url = $this->content->fileid->sizes->{$this->content->fileid->size}->url;
 			$a_pre = '';
 			$a_post = '';
 			if ( isset( $this->content->url ) && $this->content->url != '' ) {
 				$a_pre = '<a href="'.$this->content->url.'">';
 				$a_post = '</a>';
 			}
-			if( $editmode ) {
+			if ( $editmode ) {
 				$metadata = wp_get_attachment_metadata( $this->content->fileid->id );
 				if ( is_array( $metadata ) && isset( $metadata['file'] ) ) {
+					$this->content->image_meta_file = $metadata['file'];
 					$a_post .= ' ('.$metadata['file'].')';
 				} else {
-					$a_post .= json_encode( $this->content->fileid->sizes->{$this->content->fileid->size}->url );
+					$a_post .= json_encode( $this->content->image_url );
 					$a_post .= ' ('.$this->content->fileid->id.')';
 				}
 			}
 			$img_tag = wp_get_attachment_image( $this->content->fileid->id, $this->content->fileid->size );
-			if( ( !$img_tag || $img_tag == '') && !$editmode && is_object( $this->content->fileid ) ) {
-				$img_tag = '<img src="'.$this->content->fileid->sizes->{$this->content->fileid->size}->url. '"/>';
+			if ( ( ! $img_tag || $img_tag == '') && ! $editmode && is_object( $this->content->fileid ) ) {
+				$img_tag = '<img src="'.$this->content->image_url. '"/>';
 			}
-			return $a_pre.$img_tag.$a_post;
+			$this->content->image_tag = $img_tag;
+			$this->content->rendered_html = $a_pre.$img_tag.$a_post;
+			return $this->content;
 		}
-		return 'Media-Box';
+		$this->content->rendered_html = 'Media-Box';
+		return $this->content;
 	}
 
 	/**
@@ -79,19 +87,19 @@ class grid_media_box extends grid_static_base_box {
 				'type' => 'wp-mediaselect',
 				'label' => t( 'Image' ),
 				);
-				if ($value != '') {
-					$cs[] = array(
-							'key' => 'fileinfo',
-							'type' => 'info',
-							'text' => $value,
-							);
-				}
+		if ( $value != '' ) {
+			$cs[] = array(
+					'key' => 'fileinfo',
+					'type' => 'info',
+					'text' => $value,
+					);
+		}
 		$cs[] = array(
 				'key' => 'url',
 				'type' => 'text',
 				'label' => t( 'Hyperlink-URL (optional)' ),
 				);
-		
-		return $cs;
+
+				return $cs;
 	}
 }

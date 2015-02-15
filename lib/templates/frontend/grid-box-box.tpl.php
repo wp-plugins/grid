@@ -6,7 +6,7 @@
  * @package Palasthotel\Grid
  */
 ?>
-<div class="box<?php echo ($this->style)? " ".$this->style." ": " "; echo implode($this->classes," ")?>">
+<div class="grid-box box<?php echo ($this->style)? " ".$this->style." ": " "; echo implode($this->classes," ")?>">
 	<?php
 	if ($this->title!=""){
 
@@ -21,7 +21,16 @@
 		<?php echo $this->prolog?>
 	</div>
 	
-	<?php echo $content?>
+	<?php 
+	if(is_string($content) ){
+		echo $content;
+	} else {
+		?>
+		<p>There is no working template for this Box.</p>
+		<?php
+	}
+	
+	?>
 	<div class="b-epilog">
 		<?php echo $this->epilog?>
 	</div>
