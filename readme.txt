@@ -87,7 +87,6 @@ Have a look at wordpress.org for plugins that provide new grid boxes or you can 
 * "Switch to Grid" Button moved to editor sidebar
 * implemented uninstall hook
 
-
 = 1.2 =
 * added version info to the facebook and twitter subplugins
 
