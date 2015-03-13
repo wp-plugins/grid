@@ -175,6 +175,7 @@ class grid_db {
 		if(!class_exists($class))
 		{
 			$box = new grid_error_box("class not found ".$class);
+			$box->boxid=$row['box_id'];
 			$box->storage=$this;
 		} else {
 			$box=new $class();
@@ -1160,10 +1161,12 @@ order by grid_grid2container.weight,grid_container2slot.weight,grid_slot2box.wei
 		return $this->parseBox($row);
 	}
 
-	public function fetchGridRevisions($gridid) {
+	public function fetchGridRevisions($gridid,$page=0) {
 		if(strncmp("box:",$gridid,strlen("box:"))!=0 && strncmp("container:",$gridid,strlen("container:"))!=0)
 		{
-			$query = "SELECT revision,author,revision_date,published FROM ".$this->prefix."grid_grid WHERE id = $gridid ORDER BY revision DESC LIMIT 20";
+			$pagesize=20;
+			$offset=$page*$pagesize;
+			$query = "SELECT revision,author,revision_date,published FROM ".$this->prefix."grid_grid WHERE id = $gridid ORDER BY revision DESC LIMIT $pagesize OFFSET $offset";
 			$result=$this->connection->query($query) or die($this->connection->error);
 			$revisions = array();
 			$was_draft = false;
@@ -1172,7 +1175,7 @@ order by grid_grid2container.weight,grid_container2slot.weight,grid_slot2box.wei
 			// state=2 => draft
 			while($row=$result->fetch_assoc()) {
 				$state = "deprecated";
-				if(!$was_draft){
+				if(!$was_draft && $page==0){
 					$state="draft";
 					$was_draft = true;
 				}

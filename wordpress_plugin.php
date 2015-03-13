@@ -3,7 +3,7 @@
  * Plugin Name: Grid
  * Plugin URI: https://github.com/palasthotel/grid/
  * Description: Helps layouting pages with containerist.
- * Version: 1.3.1
+ * Version: 1.3.2
  * Author: Palasthotel <rezeption@palasthotel.de> (in person: Benjamin Birkenhake, Edward Bock, Enno Welbers)
  * Author URI: http://www.palasthotel.de
  * Requires at least: 4.0
@@ -16,10 +16,27 @@
 require( 'lib/grid.php' );
 global $grid_lib;
 $grid_lib = new grid_library();
+
+/**
+ * add wordpress specific boxes
+ */
 require( 'core/classes/wordpress/grid_sidebar_box.php' );
 require( 'core/classes/wordpress/grid_post_box.php' );
 require( 'core/classes/wordpress/grid_media_box.php' );
 require( 'core/classes/wordpress/grid_posts_box.php' );
+
+/**
+ * override html box
+ */
+require( 'core/classes/wordpress/grid_wp_html_box.php' );
+add_filter('grid_boxes_search', 'grid_wp_boxes_search', 10, 3);
+function grid_wp_boxes_search($result, $grid_id, $post_id){
+	for ($i=0; $i < count($result) ; $i++) { 
+		if($result[$i]["type"] == "html") array_splice($result,$i,1);
+	}
+	return $result;
+}
+
 
 add_filter( 'posts_where', 'grid_posts_where', 10, 2 );
 function grid_posts_where( $where, &$wp_query )
@@ -123,7 +140,7 @@ class grid_wordpress_ajaxendpoint extends grid_ajaxendpoint {
 								//we found a box.
 								$box=$slot->boxes[$idx];
 								$box=apply_filters('grid_persist_box',$box);
-								if(count($box)>0 && $box[0]!==NULL)
+								if(is_array($box) && count($box)>0 && $box[0]!==NULL)
 								{
 									$box=$box[0];
 									$slot->boxes[$idx]=$box;
@@ -862,9 +879,13 @@ function grid_wp_thegrid() {
 
 		wp_enqueue_script( 'grid_js_wp_js', plugins_url( 'grid-wordpress.js', __FILE__ ) );
 		$post = get_post( $postid );
+
 		echo '<div class="wrap"><h2>'.$post->post_title.
-		' <a title="Return to the post-edit page" class="add-new-h2" href="/wp-admin/post.php?post='.$postid.'&action=edit" >Edit Post</a><a class="add-new-h2" href="'.
+		' <a title="Return to the post-edit page" class="add-new-h2"'.
+		' href="'.admin_url("post.php?post=$postid&action=edit").'" >Edit Post</a'.
+		'><a class="add-new-h2" href="'.
 		get_permalink( $postid ).'">View Post</a></h2> </div>';
+
 		$html = $grid_lib->getEditorHTML(
 			$grid_id,
 			'grid',
