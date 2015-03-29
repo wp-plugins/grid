@@ -5,13 +5,13 @@
  * @license http://www.gnu.org/licenses/gpl-2.0.html GPLv2
  * @package Palasthotel\Grid-WordPress
  */
-/** 
+/**
 * Meta type "CONTENT"
 *
-* Creates a new meta type used as category for boxes. 
+* Creates a new meta type used as category for boxes.
 */
 class grid_post_box extends grid_box {
-	
+
 	/**
 	* Sets box type
 	*
@@ -30,35 +30,41 @@ class grid_post_box extends grid_box {
 	*/
 	public function build( $editmode ) {
 		$post = get_post( $this->content->postid ); // Returns post id or FALSE
-		if ( $post == FALSE ) {
+		if ( $post == false ) {
 			return 'Post is lost';
 		}
 		if ( $editmode ) {
-			return $post->post_type.': '.$post->post_title.' ('.$post->post_date.')';
+			return $post->post_type.': '.$post->post_title.' ('.$post->post_date.' - '.$post->post_status.')';
 		} else {
 			// START of WordPress Loop
-			$query = new WP_Query( array( 'p' => $this->content->postid, 'post_type' => array( 'post', 'page' ) ) );
+			$query = new WP_Query( array( 
+				'p' => $this->content->postid
+			) );
 			if ( $query->have_posts() ) {
 				$query->the_post();
 				ob_start();
-				$found = FALSE;
-				if( $this->storage->templatesPath != NULL ) {
-					if( file_exists( $this->storage->templatesPath.'/post_content.tpl.php' ) ) {
-						$found = TRUE;
+				$found = false;
+				if ( $this->storage->templatesPath != null ) {
+					if ( file_exists( $this->storage->templatesPath.'/post_content.tpl.php' ) ) {
+						$found = true;
 						include $this->storage->templatesPath.'/post_content.tpl.php';
 					}
 				}
 				if ( ! $found ) {
-					include dirname(__FILE__).'/../../templates/wordpress/post_content.tpl.php';
+					include dirname( __FILE__ ).'/../../templates/wordpress/post_content.tpl.php';
 				}
 				$output = ob_get_clean();
+				/**
+				 * post publish flag to hide from frontend
+				 */
+				$this->content->publish = get_post_status();
 				wp_reset_postdata();
 				return $output;
-			// END of WordPress Loop
+				// END of WordPress Loop
 			}
 		}
 	}
-	
+
 	/**
 	* Checks if class is meta type
 	*
@@ -67,9 +73,9 @@ class grid_post_box extends grid_box {
 	* @return boolean
 	*/
 	public function isMetaType() {
-		return TRUE;
+		return true;
 	}
-	
+
 	/**
 	* Determines name of meta type that is shown in Grid menu
 	*
@@ -78,7 +84,7 @@ class grid_post_box extends grid_box {
 	public function metaTitle() {
 		return t( 'Contents' );
 	}
-	
+
 	/**
 	* Criteria for meta search
 	*
@@ -87,7 +93,7 @@ class grid_post_box extends grid_box {
 	public function metaSearchCriteria() {
 		return array( 'title' );
 	}
-	
+
 	/**
 	* Implements meta search
 	*
@@ -98,43 +104,52 @@ class grid_post_box extends grid_box {
 	* @return array
 	*/
 	public function metaSearch( $criteria, $search ) {
-		if( $search == '' ) {
+		if ( $search == '' ) {
 			return array();
 		}
 		$results = array();
 		// START of WordPress Loop
-		$query = new WP_Query( array( 'post_type' => array( 'post', 'page' ), 'grid_title'=>$search ) );
+		$query = new WP_Query( array( 
+			'post_type' => array( 'post', 'page' ), 
+			'grid_title' => $search 
+		) );
 		while ( $query->have_posts() ) {
 			$query->the_post();
 			$post = get_post();
 			$box = new grid_post_box();
+			$box->storage = $this->storage;
 			$box->content = new StdClass();
 			$box->content->viewmode = 'excerpt';
 			$box->content->postid = $post->ID;
+			$box->content->publish = $post->post_status;
 			$results[] = $box;
 		}
 		wp_reset_postdata();
 		return $results;
 		// END of WordPress Loop
 	}
-	
+
 	/**
 	* Determines editor widgets used in backend
 	*
 	* @return array
 	*/
 	public function contentStructure () {
-		$params=array(
+		$params = array(
 			array(
 				'key' => 'viewmode',
 				'type' => 'select',
-				'label' => 'Ansicht',
-				'selections' => array( array( 'key' => 'excerpt', 'text' => 'Anriss' ), array( 'key' => 'full', 'text' => 'Voll' ) ),
+				'label' => t('Viewmode'),
+				'selections' => array( array( 'key' => 'excerpt', 'text' => t('Excerpt') ), array( 'key' => 'full', 'text' => t('Full') ) ),
 			),
 			array(
 				'key' => 'postid',
 				'type' => 'hidden',
 			),
+			array(
+				'key' => 'publish',
+				'type' => 'hidden',
+			)
 		);
 		return $params;
 	}
