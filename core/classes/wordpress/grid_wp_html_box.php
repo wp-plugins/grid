@@ -8,7 +8,7 @@
 /**
 * HTML-Box contents is considered a static content.
 */
-class grid_html_box extends grid_static_base_box {
+class grid_wp_html_box extends grid_html_box {
 	
 	/**
 	* Sets box type
@@ -16,17 +16,7 @@ class grid_html_box extends grid_static_base_box {
 	* @return string
 	*/
 	public function type() {
-		return 'html';
-	}
-
-	/**
-	* Class constructor
-	*
-	* Constructor initializes editor widgets.
-	*/
-	public function __construct() {
-		$this->content=new Stdclass();
-		$this->content->html='';
+		return 'wp_html';
 	}
 
 	/**
@@ -39,24 +29,11 @@ class grid_html_box extends grid_static_base_box {
 	public function build($editmode) {
 		if($editmode && empty($this->content->html)) {
 			return t("Static HTML-Content");
-		} else {
+		} else if($editmode){
 			return $this->content->html;
+		} else {
+			return do_shortcode($this->content->html);
 		}
-	}
-	
-	/**
-	* Determines editor widgets used in backend
-	*
-	* @return array
-	*/
-	public function contentStructure () {
-		return array(
-			array(
-				'key'=>'html',
-				'label'=>t('Text'),
-				'type'=>'html'
-			),
-		);
 	}
 
 }
