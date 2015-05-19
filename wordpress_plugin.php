@@ -3,11 +3,11 @@
  * Plugin Name: Grid
  * Plugin URI: https://github.com/palasthotel/grid/
  * Description: Helps layouting pages with containerist.
- * Version: 1.3.5
+ * Version: 1.3.6
  * Author: Palasthotel <rezeption@palasthotel.de> (in person: Benjamin Birkenhake, Edward Bock, Enno Welbers)
  * Author URI: http://www.palasthotel.de
  * Requires at least: 4.0
- * Tested up to: 4.1
+ * Tested up to: 4.2.2
  * License: http://www.gnu.org/licenses/gpl-2.0.html GPLv2
  * @copyright Copyright (c) 2014, Palasthotel
  * @package Palasthotel\Grid-WordPress
@@ -96,21 +96,58 @@ class grid_wordpress_ajaxendpoint extends grid_ajaxendpoint {
 	}
 	public function getMetaTypesAndSearchCriteria($grid_id){
 		$result=parent::getMetaTypesAndSearchCriteria($grid_id);
-		$result=apply_filters('grid_metaboxes',$result,$grid_id,grid_wp_get_postid_by_grid($grid_id));
+		$post_id=NULL;
+		if(strncmp("container:",$gridId,strlen("container:"))==0)
+		{
+			$post_id=NULL;
+		}
+		else if(strncmp("box:",$gridId,strlen("box:"))==0)
+		{
+			$post_id=NULL;
+		}
+		else
+		{
+			$post_id=grid_wp_get_postid_by_grid($grid_id);
+		}
+		$result=apply_filters('grid_metaboxes',$result,$grid_id,$post_id);
 		return $result;
 	}
 	
 	public function Search($grid_id,$metatype,$searchstring,$criteria)
 	{
 		$result=parent::Search($grid_id,$metatype,$searchstring,$criteria);
-		$result=apply_filters('grid_boxes_search',$result,$grid_id,grid_wp_get_postid_by_grid($grid_id));
+		if(strncmp("container:",$gridId,strlen("container:"))==0)
+		{
+			$post_id=NULL;
+		}
+		else if(strncmp("box:",$gridId,strlen("box:"))==0)
+		{
+			$post_id=NULL;
+		}
+		else
+		{
+			$post_id=grid_wp_get_postid_by_grid($grid_id);
+		}
+		$result=apply_filters('grid_boxes_search',$result,$grid_id,$post_id);
 		return $result;
 	}
 	
 	public function getContainerTypes($grid_id)
 	{
 		$result=parent::getContainerTypes($grid_id);
-		$result=apply_filters('grid_containers',$result,$grid_id,grid_wp_get_postid_by_grid($grid_id));
+		if(strncmp("container:",$gridId,strlen("container:"))==0)
+		{
+			$post_id=NULL;
+		}
+		else if(strncmp("box:",$gridId,strlen("box:"))==0)
+		{
+			$post_id=NULL;
+		}
+		else
+		{
+			$post_id=grid_wp_get_postid_by_grid($grid_id);
+		}
+		$result=apply_filters('grid_containers',$result,$grid_id,$post_id);
 		return $result;
 	}
 

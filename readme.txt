@@ -3,8 +3,8 @@ Contributors: edwardbock,mkernel
 Donate link: http://palasthotel.de/
 Tags: landingpage, editor, admin, page, containerist
 Requires at least: 4.0
-Tested up to: 4.2.1
-Stable tag: 1.3.5
+Tested up to: 4.2.2
+Stable tag: 1.3.6
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl
 
@@ -72,6 +72,10 @@ Have a look at wordpress.org for plugins that provide new grid boxes or you can 
 == Changelog ==
 
 = 1.3.5 =
+ * more revisions loader on scroll
+ * loading opration overlay
+
+= 1.3.5 =
  * missing wordpress media in reuse box editor
 
 = 1.3.4 =
@@ -126,7 +130,8 @@ Some boxes could not be saved. Now they can.
 = 1.3.1 =
 If you are using git in your project the lib folder was ignore previously.
 
-
+= 1.3.2 =
+Fixes an sql error which occurs when editing reusable boxes or containers.
 
 == Arbitrary section ==
 
