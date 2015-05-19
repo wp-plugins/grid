@@ -24,8 +24,8 @@ class grid_slot extends grid_base {
 		$boxes=array();
 		if(count($this->boxes)>0)
 		{
-			$this->boxes[0]->classes[]="box-first";
-			$this->boxes[count($this->boxes)-1]->classes[]="box-last";
+			$this->boxes[0]->classes[]="grid-box-first";
+			$this->boxes[count($this->boxes)-1]->classes[]="grid-box-last";
 		}
 
 		foreach($this->boxes as $box)
@@ -34,10 +34,23 @@ class grid_slot extends grid_base {
 		}
 
 		ob_start();
-		if($this->storage->templatesPath!=NULL && file_exists($this->storage->templatesPath.'/grid-slot.tpl.php'))
-			include $this->storage->templatesPath.'/grid-slot.tpl.php';
-		else
+		$found = FALSE;
+		if( is_array( $this->storage->templatesPaths) )
+		{
+			foreach ($this->storage->templatesPaths as $templatesPath) {
+				$template_path = rtrim($templatesPath.'/grid-slot.tpl.php', "/");
+				if( file_exists($template_path) ){
+					include $template_path;
+					$found = TRUE;
+					break;
+				}				
+			}
+			
+		}
+		if(!$found)
+		{
 			include dirname(__FILE__).'/../templates/frontend/grid-slot.tpl.php';
+		}
 		$output=ob_get_clean();
 		return $output;
 	}
