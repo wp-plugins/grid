@@ -3,8 +3,10 @@
  * @author Palasthotel <rezeption@palasthotel.de>
  * @copyright Copyright (c) 2014, Palasthotel
  * @license http://www.gnu.org/licenses/gpl-2.0.html GPLv2
- * @package Palasthotel\Grid
+ * @package Palasthotel\Grid-Wordpress
  */
+
+if('publish' == $content->publish):
 ?>
 <div class="grid-box<?php echo ($this->style)? " ".$this->style." ": " "; echo implode($this->classes," ")?>">
 	<?php
@@ -25,13 +27,7 @@
 	<?php } ?>
 	
 	<?php 
-	if(is_string($content) ){
-		echo $content;
-	} else {
-		?>
-		<p>There is no working template for this Box.</p>
-		<?php
-	}
+	echo $content->output;
 	?>
 	
 	<?php if($this->epilog != ""){ ?>
@@ -46,3 +42,6 @@
 	<?php }?>
 	
 </div>
+<?php
+endif;
+?>
