@@ -116,32 +116,66 @@ class grid_box extends grid_base {
 	* @return mixed
 	*/
 	public function render($editmode) {
-		$content=$this->build($editmode);
 		ob_start();
 		$found=FALSE;
 		$this->classes[] = "grid-box-".$this->type();
-		if($this->storage->templatesPath!=NULL)
+		$typechecks=array();
+		$class=get_class($this);
+		$typechecks[]=preg_replace("/(?:grid_(.*)_box|grid_(box))/u", "$1$2", $class);
+		while($class!=FALSE)
 		{
-			if(file_exists($this->storage->templatesPath.'/grid-box-'.$this->type().'.tpl.php'))
-			{
-				$found=TRUE;
-				include $this->storage->templatesPath.'/grid-box-'.$this->type().'.tpl.php';
-			}
-			else if(file_exists($this->storage->templatesPath.'/grid-box-box.tpl.php'))
-			{
-				$found=TRUE;
-				include $this->storage->templatesPath.'/grid-box-box.tpl.php';
-			}
+			$class=get_parent_class($class);
+			$typechecks[]=preg_replace("/(?:grid_(.*)_box|grid_(box))/u", "$1$2", $class);
 		}
-		if(!$found)
+		foreach($typechecks as $type)
 		{
-			if(file_exists(dirname(__FILE__).'/../templates/frontend/grid-box-'.$this->type().'.tpl.php'))
-				include dirname(__FILE__).'/../templates/frontend/grid-box-'.$this->type().'.tpl.php';
-			else
-				include dirname(__FILE__).'/../templates/frontend/grid-box-box.tpl.php';
+			if(is_array($this->storage->templatesPaths))
+			{
+				foreach($this->storage->templatesPaths as $templatesPath) {
+					$found=$this->renderTemplate($templatesPath, $editmode, $type);
+					if($found) break;
+				}
+			}
+			if(!$found)
+			{
+				$found = $this->renderTemplate($this->storage->templatesPath, $editmode, $type);
+			}
+			if(!$found)
+			{
+				$found=$this->renderTemplate(dirname(__FILE__).'/../templates/frontend',$editmode,$type);
+			}
+			if($found) break;
 		}
+
 		$output=ob_get_clean();
 		return $output;
+	}
+
+	/**
+	 * includes tempalte content
+	 * @param  String $templatesPath
+	 * @param  boolean $editmode       
+	 * @return boolean  found or not
+	 */
+	private function renderTemplate($templatesPath, $editmode, $type){
+		$templatesPath = rtrim($templatesPath, "/");
+		$found=FALSE;
+		if($templatesPath!=NULL)
+		{
+			if($editmode && file_exists($templatesPath.'/grid-box-'.$type.'-editmode.tpl.php'))
+			{
+				$found=TRUE;
+				$content=$this->build($editmode);
+				include $templatesPath.'/grid-box-'.$type.'-editmode.tpl.php';
+			}
+			if(!$editmode && file_exists($templatesPath.'/grid-box-'.$type.'.tpl.php'))
+			{
+				$found=TRUE;
+				$content=$this->build($editmode);
+				include $templatesPath.'/grid-box-'.$type.'.tpl.php';
+			}
+		}
+		return $found;
 	}
 	
 	/**
